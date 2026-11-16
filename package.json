@@ -1,0 +1,17 @@
+{
+  "name": "personal-information-agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "拾简 · 个人信息管家 Agent，记录、检索和整理个人想法、资料及待办",
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "prestart": "npm run build",
+    "start": "node --env-file-if-exists=.env server.mjs",
+    "pretest": "npm run build",
+    "test": "node --test"
+  }
+}

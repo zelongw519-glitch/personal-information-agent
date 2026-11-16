@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>拾简 · 个人信息管家</title>
+<meta name="description" content="记录、检索和整理个人想法、资料及待办。">
+<style>
+:root{font-family:system-ui,"Microsoft YaHei",sans-serif;color:#23291f;background:#f5f5ee;--green:#344c34;--soft:#e6ebdc;--muted:#5d6556;--line:#dce0d4}
+*{box-sizing:border-box}body{margin:0}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.55;cursor:wait}button,a,input,textarea,select{outline-offset:4px}a{color:var(--green)}
+.layout{max-width:1500px;margin:auto;display:grid;grid-template-columns:232px 1fr;min-height:100vh}.rail{background:#edeee4;border-right:1px solid var(--line);padding:35px 22px;display:flex;flex-direction:column;gap:32px}.brand{display:flex;align-items:center;gap:12px}.mark{display:grid;place-items:center;width:41px;height:41px;border-radius:12px;background:var(--green);color:#f6f4e7;font-family:serif;font-size:23px}.brand strong{font-family:serif;font-size:24px;letter-spacing:.1em}.brand small,.label,small{color:var(--muted)}.brand small{display:block;font-size:11px}.label{font-size:11px;letter-spacing:.16em;font-weight:700}.nav{display:grid;gap:6px}.nav button{text-align:left;border:0;background:none;padding:11px 14px;border-radius:9px;color:#394635}.nav button[aria-pressed=true]{background:#dce6d4;font-weight:700}.rail footer{margin-top:auto;font-size:12px;color:var(--muted);line-height:1.8}
+main{padding:34px clamp(20px,5vw,70px) 70px;min-width:0}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-bottom:18px;border-bottom:1px solid var(--line)}.status{font-size:12px;border:1px solid #c9d3bf;padding:5px 10px;border-radius:99px;color:#3c5139}.hero{margin:38px 0 25px}h1,h2,h3,p{margin-top:0}h1{font-family:"Songti SC",SimSun,serif;font-size:clamp(30px,5vw,53px);letter-spacing:-.04em;margin:7px 0 12px}.hero p,.muted{color:var(--muted)}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}.tile,.panel,.entry{background:#fffefa;border:1px solid var(--line);border-radius:14px}.tile{padding:14px 18px}.tile b{display:block;font-family:Georgia,serif;font-size:29px;color:var(--green);margin-bottom:3px}.panel{padding:22px;margin-bottom:22px}.capture{border-top:3px solid #8ca483}.formhead,.tools,.actions,.entryhead{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}h2{font-size:19px;margin-bottom:12px}h3{font-size:17px;margin:0;overflow-wrap:anywhere}.formhead h2{margin:0}input,textarea,select{padding:10px 12px;background:#fffefa;border:1px solid #ced5c8;border-radius:8px;color:inherit}input,textarea{width:100%}textarea{min-height:100px;resize:vertical;margin:9px 0}form input{margin-top:12px}.primary,.secondary,.link{padding:9px 13px;border-radius:8px;border:1px solid var(--line);background:#fafbf5;color:var(--green)}.primary{background:var(--green);border-color:var(--green);color:white}.link{padding:3px 7px;text-align:left}.tools{margin:22px 0 12px}.tools input{max-width:310px}.tools h2{margin:0}.entries{display:grid;gap:10px}.entry{padding:17px 20px;overflow-wrap:anywhere}.entry p{margin:12px 0;white-space:pre-wrap}.entry details{margin:11px 0}.entry ul,#result ul{padding-left:20px}.entry li,#result li{margin:7px 0}.badge{font-size:11px;background:var(--soft);color:var(--green);padding:4px 8px;border-radius:99px}.entry .actions{justify-content:flex-start}.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed #bbc5b4;border-radius:12px}.notice{color:#744522;font-size:13px;min-height:1em;margin:12px 0}.pager{justify-content:center;margin:16px 0}#result{white-space:pre-wrap;overflow-wrap:anywhere;margin-top:18px}dialog{border:1px solid var(--line);border-radius:14px;width:min(600px,94vw);padding:18px;background:#f5f5ee}dialog::backdrop{background:#1920187a}summary{cursor:pointer}
+@media(max-width:740px){.layout{display:block}.rail{padding:16px 20px;gap:13px;border-right:0;border-bottom:1px solid var(--line)}.nav{display:flex;flex-wrap:wrap}.nav button{padding:8px 10px}.rail footer{display:none}main{padding-top:18px}.hero{margin-top:24px}.tile{padding:10px}.tools input{max-width:none}}
+</style></head>
+<body><div class="layout"><aside class="rail"><div class="brand"><span class="mark" aria-hidden="true">拾</span><div><strong>拾简</strong><small>个人信息管家</small></div></div><nav class="nav" aria-label="工作区"><button data-view="all" aria-pressed="true">▤　全部记录</button><button data-view="tasks" aria-pressed="false">☑　待办清单</button><button data-view="ask" aria-pressed="false">✦　智能问答</button><button data-view="review" aria-pressed="false">◷　阶段总结</button></nav><footer>你的私人资料库<br>登录后跨设备同步</footer></aside>
+<main><header class="top"><span class="label">个人工作区 / PRIVATE WORKSPACE</span><span id="status" class="status">连接中</span></header>
+<div class="hero"><span class="label">把零散的信息收在一处</span><h1 id="heading">全部记录</h1><p id="subtitle">随手记下一个念头、一份资料或一件要做的事。</p></div>
+<div id="notice" class="notice" role="status"></div>
+<section id="library"><div class="stats"><div class="tile"><b id="total">—</b><small>全部记录</small></div><div class="tile"><b id="pending">—</b><small>未完成待办</small></div><div class="tile"><b id="organized">—</b><small>已智能整理</small></div></div>
+<form class="panel capture" id="capture"><div class="formhead"><h2>快速记录</h2><select id="kind" aria-label="记录类别"><option>想法</option><option>资料</option><option>待办</option></select></div><input id="title" maxlength="120" placeholder="标题（选填）" aria-label="标题"><textarea id="body" required maxlength="12000" placeholder="写下想法、粘贴资料正文或记录下一件要做的事…" aria-label="记录内容"></textarea><div class="actions"><small id="savehint">保存至私人云端资料库</small><button class="primary">保存记录</button></div></form>
+<div class="tools"><h2 id="listHeading">最近记录</h2><input id="search" type="search" maxlength="120" placeholder="搜索标题、正文或整理结果" aria-label="关键词搜索"></div><div class="entries" id="entries"></div><div class="actions pager" id="pager" hidden><button id="prev" class="secondary">上一页</button><small id="pageNumber"></small><button id="next" class="secondary">下一页</button></div></section>
+<section id="assistant" class="panel" hidden><form id="prompt"><h2 id="promptTitle">向资料库提问</h2><label id="questionLabel" for="question">你想了解什么？</label><textarea id="question" maxlength="800" placeholder="例如：我最近记录了哪些关于产品上线的待办？"></textarea><label id="periodLabel" hidden>总结范围 <select id="days"><option value="7">最近 7 天</option><option value="30">最近 30 天</option><option value="90">最近 90 天</option></select></label><div class="actions"><small>结果会标出可回看的引用记录。</small><button class="primary" id="generate">提问</button></div></form><div id="result" aria-live="polite"></div></section></main></div>
+<dialog id="detail"><form method="dialog"><button class="secondary">关闭</button></form><div id="detailBody"></div></dialog>
+<script>
+const $ = id => document.getElementById(id);
+const viewLabels = {
+  all: ['全部记录','随手记下一个念头、一份资料或一件要做的事。'],
+  tasks: ['待办清单','集中查看待办，并勾掉已完成的事项。'],
+  ask: ['智能问答','根据自己的记录找答案，随时回到引用来源。'],
+  review: ['阶段总结','回顾这段时间的进展，并梳理下一步行动。']
+};
+let view='all', page=0, ai=false, requestId=0, promptId=0, searchTimer;
+function node(tag, content, className) {
+  const element=document.createElement(tag);
+  if(content!==undefined) element.textContent=content;
+  if(className) element.className=className;
+  return element;
+}
+function notice(message='') { $('notice').textContent=message; }
+async function api(path, data) {
+  const response=await fetch('/api/'+path, data===undefined ? {} : {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  const result=await response.json();
+  if(!response.ok) {
+    if(response.status===401) {
+      const signIn=node('a','登录 ChatGPT'); signIn.href='/signin-with-chatgpt?return_to=%2F'; signIn.target='_top';
+      $('status').replaceChildren(signIn);
+    }
+    throw new Error(result.error);
+  }
+  return result;
+}
+function button(label, action, style='secondary') {
+  const control=node('button',label,style); control.type='button';
+  control.onclick=()=>run(control,action);
+  return control;
+}
+async function run(control, action) {
+  control.disabled=true; notice();
+  try { await action(); } catch(error) { notice(error.message); }
+  finally { control.disabled=false; }
+}
+function addList(parent,title,items) {
+  if(!items?.length)return;
+  parent.append(node('strong',title));
+  const ul=node('ul');
+  items.forEach(item=>{ const li=node('li'); li.append(item); ul.append(li); });
+  parent.append(ul);
+}
+function sourceLink(source) {
+  return button(source.title,async()=>{
+    const { entry }=await api('entry',{id:source.id});
+    $('detailBody').replaceChildren(card(entry,true));
+    if(!$('detail').open)$('detail').showModal();
+  },'link');
+}
+function taskButton(task) {
+  return button('加入待办',async()=>{
+    await api('entries',{title:task,body:task,kind:'待办'});
+    await load(); notice('已加入待办清单');
+  },'link');
+}
+function card(entry, detail=false) {
+  const article=node('article',undefined,'entry'), head=node('div',undefined,'entryhead');
+  head.append(node('h3',entry.title),node('span',entry.kind+(entry.done?' · 已完成':''),'badge'));
+  article.append(head,node('small',new Date(entry.created).toLocaleString('zh-CN')));
+  const analysis=entry.analysis;
+  if(analysis && !detail) article.append(node('p',analysis.summary));
+  if(detail || !analysis) article.append(node('p',entry.body));
+  if(!detail) {
+    const content=node('details'), summary=node('summary',analysis?'原文与整理结果':'查看完整记录');
+    content.append(summary,node('p',entry.body));
+    if(analysis) {
+      addList(content,'重点',analysis.highlights);
+      addList(content,'提取的待办',analysis.tasks.map(task=>{const span=node('span',task+' ');span.append(taskButton(task));return span;}));
+      addList(content,'相关记录',analysis.related.map(sourceLink));
+    }
+    article.append(content);
+  }
+  const controls=node('div',undefined,'actions');
+  if(!detail) {
+    if(entry.kind==='待办') controls.append(button(entry.done?'重新打开':'标记完成',async()=>{
+      await api('complete',{id:entry.id,done:!entry.done}); await load();
+    }));
+    if(ai) controls.append(button(analysis?'重新整理':'智能整理',async()=>{
+      notice('正在整理…'); await api('organize',{id:entry.id}); await load(); notice('整理完成');
+    }));
+    controls.append(button('删除',async()=>{
+      if(!confirm('删除这条记录？'))return;
+      await api('delete',{id:entry.id}); await load();
+    }));
+    article.append(controls);
+  }
+  return article;
+}
+async function load() {
+  const id=++requestId;
+  const data=await api('entries?'+new URLSearchParams({kind:view==='tasks'?'待办':'',q:$('search').value,page}));
+  if(id!==requestId)return;
+  if(!data.entries.length && page>0){page--;return load();}
+  ai=data.ai;
+  const storageLabel=data.storage==='local'?'本地保存':'云端同步';
+  $('status').textContent=storageLabel+(ai?' · 模型已配置':' · 模型待配置');
+  $('savehint').textContent=ai?'保存后自动整理':(data.storage==='local'?'保存至本地资料库':'保存至私人云端资料库');
+  document.querySelector('.rail footer').textContent=data.storage==='local'?'本地开发模式 · 资料保存在本机':'你的私人资料库 · 登录后跨设备同步';
+  for(const key of ['total','pending','organized']) $(''+key).textContent=data.stats[key];
+  $('entries').replaceChildren(...(data.entries.length ? data.entries.map(entry=>card(entry)) : [node('div',$('search').value?'没有匹配的记录。':view==='tasks'?'还没有待办。':'还没有记录。可以先记下一件小事。','empty')]));
+  $('pager').style.display=page||data.more?'flex':'none';
+  $('prev').disabled=page===0; $('next').disabled=!data.more;
+  $('pageNumber').textContent='第 '+(page+1)+' 页';
+}
+function refresh(){load().catch(error=>notice(error.message));}
+document.querySelectorAll('[data-view]').forEach(control=>control.onclick=()=>{
+  view=control.dataset.view; page=0; promptId++; notice();
+  document.querySelectorAll('[data-view]').forEach(item=>item.setAttribute('aria-pressed',String(item===control)));
+  [$('heading').textContent,$('subtitle').textContent]=viewLabels[view];
+  const library=view==='all'||view==='tasks', review=view==='review';
+  $('library').hidden=!library; $('assistant').hidden=library;
+  if(library){$('kind').value=view==='tasks'?'待办':'想法';$('listHeading').textContent=view==='tasks'?'我的待办':'最近记录';refresh();return;}
+  $('promptTitle').textContent=review?'生成阶段总结':'向资料库提问';
+  $('questionLabel').hidden=review; $('question').hidden=review; $('question').required=!review;
+  $('periodLabel').hidden=!review; $('generate').textContent=review?'生成总结':'提问'; $('generate').disabled=false;
+  $('result').textContent='';
+});
+$('search').oninput=()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>{page=0;refresh();},220);};
+$('prev').onclick=()=>{if(page>0)page--;refresh();};
+$('next').onclick=()=>{page++;refresh();};
+$('capture').onsubmit=event=>{
+  event.preventDefault();
+  run(event.submitter,async()=>{
+    const data=await api('entries',{title:$('title').value,body:$('body').value,kind:$('kind').value});
+    $('title').value=''; $('body').value=''; $('search').value=''; page=0;
+    await load(); notice(data.ai?'已保存，正在自动整理…':'已保存');
+    if(!data.ai)return;
+    try { await api('organize',{id:data.entry.id}); await load(); notice('已保存并整理'); }
+    catch(error) { notice('记录已保存。'+error.message); }
+  });
+};
+$('prompt').onsubmit=event=>{
+  event.preventDefault();
+  const id=++promptId;
+  run(event.submitter,async()=>{
+    $('result').textContent='正在整理记录…';
+    try {
+      const response=await api(view==='review'?'review':'ask',{question:view==='review'?'':$('question').value,days:Number($('days').value)});
+      if(id!==promptId)return;
+      $('result').replaceChildren(node('p',response.answer));
+      addList($('result'),'后续行动',response.actions.map(task=>{const span=node('span',task+' ');span.append(taskButton(task));return span;}));
+      addList($('result'),'引用记录',response.sources.map(sourceLink));
+      if(response.scope)$('result').append(node('small',response.scope));
+    } catch(error) { if(id===promptId)$('result').textContent=error.message; }
+  });
+};
+refresh();
+</script></body></html>
